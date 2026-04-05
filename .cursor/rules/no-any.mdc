@@ -1,0 +1,79 @@
+---
+description: any is forbidden — use unknown, generics, or discriminated unions instead. All workarounds must be documented with a TODO.
+alwaysApply: true
+---
+
+# no-any
+
+## Intent
+`any` erases the type system at the point of use and propagates unsafety downstream.
+A single `any` can silently corrupt the type correctness of an entire call chain.
+
+## Forbidden Behavior
+
+- MUST NOT write `any` in new code under any circumstances.
+- MUST NOT use `as any` casts as a workaround for type errors.
+- MUST NOT use `// @ts-ignore` without an accompanying explanation and a TODO tracking the fix.
+- MUST NOT use `// @ts-expect-error` as a permanent solution — only acceptable for known library type gaps with a linked issue.
+- MUST NOT accept or return `any` in function signatures, even for "generic utility" functions.
+
+## Required Alternatives (in priority order)
+
+| Situation | Use Instead |
+|---|---|
+| Shape is truly unknown at compile time | `unknown` — force callers to narrow |
+| Function works on multiple types | Generic `<T>` with constraints |
+| Union of known variants | Discriminated union `type X = A \| B \| C` |
+| External API response | Zod schema + inferred type (Phase 2+) / `unknown` + manual narrowing (now) |
+| Rapid prototyping, shape not yet determined | `interface TodoType { /* TODO: define */ }` |
+| Third-party library with broken types | `// @ts-expect-error [reason] — tracked: [issue or TODO ref]` |
+
+## Required Behavior
+
+- When the correct type is not yet known, MUST use `unknown` and add a narrowing guard before use.
+- When a workaround is unavoidable (broken library types), MUST add a comment in this exact format:
+
+```ts
+// TODO(no-any): replace with proper type when [library]@X.X ships correct types
+// Tracked: [link or internal ref]
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const result = thirdPartyFn() as unknown as ExpectedShape
+```
+
+- All `TODO(no-any)` comments MUST be resolved before a file is considered production-ready.
+
+## Good Example
+
+```ts
+// Unknown API shape — use unknown, then narrow
+async function fetchUser(id: string): Promise<User> {
+  const raw: unknown = await fetch(`/api/users/${id}`).then(r => r.json())
+  if (!isUser(raw)) throw new Error('Unexpected user shape')
+  return raw
+}
+
+// Generic utility
+function first<T>(arr: readonly T[]): T | undefined {
+  return arr[0]
+}
+```
+
+## Bad Example
+
+```ts
+// FORBIDDEN
+async function fetchUser(id: string): Promise<any> {
+  return fetch(`/api/users/${id}`).then(r => r.json())
+}
+
+// FORBIDDEN — any propagates into all callers
+function first(arr: any[]): any {
+  return arr[0]
+}
+```
+
+## Notes
+
+- ESLint rule `@typescript-eslint/no-explicit-any` enforces this automatically once ESLint is configured (Phase 2).
+- `Record<string, unknown>` is the correct type for "object with unknown values", not `Record<string, any>`.
+- JSON.parse returns `any` in TypeScript — always assign to `unknown` and validate before use.
