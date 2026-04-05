@@ -1,0 +1,11 @@
+{
+  "name": "@vibe/config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared tooling config: ESLint, TypeScript base, PostCSS — Phase 0+",
+  "main": "./index.js",
+  "scripts": {
+    "typecheck": "echo 'no ts sources'",
+    "lint": "echo 'lint placeholder'"
+  }
+}
