@@ -27,3 +27,6 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI Audit — runtime artifacts should not be committed
+.ai-audit/events.jsonl
