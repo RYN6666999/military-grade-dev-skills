@@ -1,0 +1,55 @@
+name: Guard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  guard:
+    name: Quality Guards
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ---------- guard:types ----------
+      # TypeScript strict check across all workspaces.
+      # Failure here means a type error was introduced — hard stop.
+      - name: Type check
+        run: npm run guard:types
+
+      # ---------- guard:lint ----------
+      # ESLint baseline across all workspaces.
+      # Failure here means a lint rule was violated — hard stop.
+      - name: Lint
+        run: npm run guard:lint
+
+      # ---------- guard:contracts ----------
+      # Semantic smoke: valid examples parse, invalid examples fail.
+      # Failure here means a contract schema is broken — hard stop.
+      - name: Contract guard
+        run: npm run guard:contracts
+
+      # ---------- guard:ppr ----------
+      # Verifies cacheComponents: true is present in next.config.ts.
+      # Failure here means the PPR setting was accidentally removed — hard stop.
+      - name: PPR guard
+        run: npm run guard:ppr
+
+      # ---------- build ----------
+      # Full Next.js production build.
+      # Catches build-time errors not caught by tsc alone (e.g. dynamic imports,
+      # server/client boundary violations, App Router config issues).
+      # Runs after all guards so failures are clearly attributed.
+      - name: Build
+        run: npm run build

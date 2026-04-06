@@ -10,9 +10,18 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "gen:contracts": "node scripts/spec-to-contract.mjs",
+    "gen:page": "node scripts/generate-page.mjs",
+    "guard:types": "turbo run typecheck",
+    "guard:lint": "turbo run lint",
+    "guard:contracts": "tsx scripts/verify-contracts.mjs",
+    "guard:ppr": "node scripts/check-ppr.mjs",
+    "guard:all": "npm run guard:types && npm run guard:lint && npm run guard:contracts && npm run guard:ppr"
   },
   "devDependencies": {
+    "handlebars": "^4.7.9",
+    "tsx": "^4.19.0",
     "turbo": "^2.5.0",
     "typescript": "^5.8.0"
   },
