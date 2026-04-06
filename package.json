@@ -21,7 +21,9 @@
     "guard:lint": "turbo run lint",
     "guard:contracts": "tsx scripts/verify-contracts.mjs",
     "guard:ppr": "node scripts/check-ppr.mjs",
-    "guard:all": "npm run guard:types && npm run guard:lint && npm run guard:contracts && npm run guard:ppr"
+    "guard:all": "npm run guard:types && npm run guard:lint && npm run guard:contracts && npm run guard:ppr",
+    "verify:env": "node scripts/verify-env.mjs",
+    "deploy:check": "node scripts/deploy-check.mjs"
   },
   "devDependencies": {
     "handlebars": "^4.7.9",

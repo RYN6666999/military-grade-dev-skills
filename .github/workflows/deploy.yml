@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Readiness Check & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Runs guard:all + build + verify:env in sequence.
+      # Any failure will stop the pipeline here.
+      - name: Deploy readiness check
+        run: npm run deploy:check
+
+      # ---------------------------------------------------------
+      # TODO: Configure your deployment provider below.
+      # Examples:
+      #   - Vercel: use vercel-action or `npx vercel --prod`
+      #   - Cloudflare Pages: use wrangler-action
+      #   - AWS Amplify: use amplify CLI
+      #
+      # Replace this step with your provider-specific deployment.
+      # ---------------------------------------------------------
+      - name: Deploy to provider
+        run: echo "Deploy step placeholder — configure your provider in this step."

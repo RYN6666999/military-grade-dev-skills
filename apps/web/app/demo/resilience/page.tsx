@@ -77,9 +77,12 @@ export default function ResilienceDemoPage() {
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
           3 · FaultIsolatedSection (enabled, content throws)
         </h2>
+        {/* DynamicSection provides the Suspense boundary required by cacheComponents. */}
+        {/* FaultIsolatedSection provides the error boundary around the async child.   */}
         <FaultIsolatedSection enabled>
-
-          <BrokenContent />
+          <DynamicSection>
+            <BrokenContent />
+          </DynamicSection>
         </FaultIsolatedSection>
         <p className="text-xs text-zinc-600">
           ↑ Error is caught locally. Sections 1, 2, and 4 are unaffected.
@@ -93,9 +96,11 @@ export default function ResilienceDemoPage() {
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
           4 · FaultIsolatedSection (enabled=false, feature gate off)
         </h2>
+        {/* DynamicSection provides the Suspense boundary required by cacheComponents. */}
         <FaultIsolatedSection enabled={false}>
-
-          <SlowContent />
+          <DynamicSection>
+            <SlowContent />
+          </DynamicSection>
         </FaultIsolatedSection>
         <p className="text-xs text-zinc-600">
           ↑ Children never mount. Disabled fallback is shown instead.
