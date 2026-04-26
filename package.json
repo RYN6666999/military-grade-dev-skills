@@ -17,11 +17,12 @@
     "audit:gen:page": "node scripts/audit-gen-page.mjs",
     "audit:guard:all": "node scripts/audit-guard-all.mjs",
     "audit:verify": "node scripts/verify-audit.mjs",
+    "guard:specs": "node scripts/guard-specs.mjs",
     "guard:types": "turbo run typecheck",
     "guard:lint": "turbo run lint",
     "guard:contracts": "tsx scripts/verify-contracts.mjs",
     "guard:ppr": "node scripts/check-ppr.mjs",
-    "guard:all": "npm run guard:types && npm run guard:lint && npm run guard:contracts && npm run guard:ppr",
+    "guard:all": "npm run guard:specs && npm run guard:types && npm run guard:lint && npm run guard:contracts && npm run guard:ppr",
     "verify:env": "node scripts/verify-env.mjs",
     "deploy:check": "node scripts/deploy-check.mjs"
   },

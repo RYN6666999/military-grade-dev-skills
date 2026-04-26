@@ -1,0 +1,23 @@
+---
+description: Load all vibe-coding-template skills from the .skills/ directory
+alwaysApply: true
+---
+
+# Skills Bridge
+
+This project uses the Agent Skills open standard (SKILL.md format) as the
+single source of truth for all AI behavioral rules.
+
+All rules live in `.skills/*/SKILL.md`. Read and follow them.
+
+Key skills to always observe:
+- `.skills/vibe-scope-control/SKILL.md` — no silent scope expansion
+- `.skills/vibe-no-any/SKILL.md` — any is forbidden
+- `.skills/vibe-spec-first/SKILL.md` — no spec, no code
+- `.skills/vibe-contracts/SKILL.md` — runtime contracts at all I/O
+- `.skills/vibe-fault-isolation/SKILL.md` — section crashes must be contained
+- `.skills/vibe-state-management/SKILL.md` — no boolean soup
+
+For the full development workflow: `.skills/vibe-develop/SKILL.md`
+For running guards: `.skills/vibe-guard/SKILL.md`
+For generating pages: `.skills/vibe-gen-page/SKILL.md`

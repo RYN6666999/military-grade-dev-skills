@@ -5,13 +5,7 @@
 //   node scripts/spec-to-contract.mjs                   <- process all discovered specs
 //   node scripts/spec-to-contract.mjs path/to/spec.md   <- one specific file
 //
-// Spec resolution order (dual-track, OpenSpec path takes priority):
-//   1. openspec/changes/*/specs/**/*.spec.md  — authoritative (OpenSpec)
-//   2. specs/*.spec.md                        — legacy path (deprecated fallback)
-//
-// If both tracks contain a spec for the same domain+action, the OpenSpec path wins.
-// Legacy specs marked with `deprecated: true` in frontmatter are still processed
-// as a fallback but will emit a warning.
+// Spec resolution: openspec/changes/*/specs/**/*.spec.md
 //
 // Spec format requirements:
 //   - YAML frontmatter with: domain, action, version
@@ -26,7 +20,6 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..')
 const OPENSPEC_CHANGES_DIR = join(ROOT, 'openspec', 'changes')
-const LEGACY_SPECS_DIR = join(ROOT, 'specs')
 const CONTRACTS_DIR = join(ROOT, 'packages', 'contracts')
 
 // ---------------------------------------------------------------------------
@@ -66,96 +59,33 @@ function parseSection(content, heading) {
 }
 
 // ---------------------------------------------------------------------------
-// Dual-track spec discovery
+// Spec discovery
 // ---------------------------------------------------------------------------
 
-/**
- * Recursively finds all *.spec.md files under a directory.
- * Returns [] if the directory does not exist.
- */
-async function findSpecFiles(dir) {
-  let entries
+async function discoverSpecFiles() {
+  let changesDirs
   try {
-    entries = await readdir(dir, { recursive: true })
+    changesDirs = await readdir(OPENSPEC_CHANGES_DIR)
   } catch {
     return []
   }
-  return entries
-    .filter((name) => name.endsWith('.spec.md'))
-    .map((name) => join(dir, name))
-}
 
-/**
- * Builds a deduplicated list of spec files.
- *
- * Priority rules:
- *   1. Scan openspec/changes/* /specs/ — all found specs are authoritative.
- *   2. Scan legacy specs/ — only include if no OpenSpec spec covers the same
- *      domain+action (determined by parsing frontmatter).
- *   3. Deprecated legacy specs that are superseded emit a warning, not an error.
- */
-async function discoverSpecFiles() {
-  // --- OpenSpec specs (authoritative) ---
-  let openspecFiles = []
-  let openspecChangeDirs
-  try {
-    openspecChangeDirs = await readdir(OPENSPEC_CHANGES_DIR)
-  } catch {
-    openspecChangeDirs = []
-  }
-
-  for (const changeDir of openspecChangeDirs) {
-    if (changeDir === 'archive') continue
-    const specsDir = join(OPENSPEC_CHANGES_DIR, changeDir, 'specs')
-    const found = await findSpecFiles(specsDir)
-    openspecFiles = openspecFiles.concat(found)
-  }
-
-  // Build a set of domain+action keys already covered by OpenSpec
-  const coveredKeys = new Set()
-  for (const f of openspecFiles) {
+  let specFiles = []
+  for (const dir of changesDirs) {
+    if (dir === 'archive') continue
+    const specsDir = join(OPENSPEC_CHANGES_DIR, dir, 'specs')
+    let entries
     try {
-      const content = await readFile(f, 'utf8')
-      const meta = parseFrontmatter(content)
-      coveredKeys.add(`${meta.domain}/${meta.action}`)
+      entries = await readdir(specsDir, { recursive: true })
     } catch {
-      // If we can't parse frontmatter, still include the file — it will fail loudly later
+      continue
     }
+    const found = entries
+      .filter((name) => name.endsWith('.spec.md'))
+      .map((name) => join(specsDir, name))
+    specFiles = specFiles.concat(found)
   }
-
-  // --- Legacy specs (fallback) ---
-  const legacyFiles = await findSpecFiles(LEGACY_SPECS_DIR)
-  const legacyIncluded = []
-
-  for (const f of legacyFiles) {
-    try {
-      const content = await readFile(f, 'utf8')
-      const meta = parseFrontmatter(content)
-      const key = `${meta.domain}/${meta.action}`
-
-      if (coveredKeys.has(key)) {
-        // Superseded by OpenSpec — skip with warning
-        const rel = f.replace(ROOT + '/', '')
-        const isDeprecated = meta.deprecated === 'true'
-        if (!isDeprecated) {
-          console.warn(`⚠  ${rel}: superseded by OpenSpec spec for ${key} (consider adding deprecated: true)`)
-        }
-        continue
-      }
-
-      if (meta.deprecated === 'true') {
-        const rel = f.replace(ROOT + '/', '')
-        console.warn(`⚠  ${rel}: deprecated spec with no OpenSpec replacement — still generating`)
-      }
-
-      legacyIncluded.push(f)
-      coveredKeys.add(key)
-    } catch {
-      legacyIncluded.push(f) // Include and let processSpec report the error
-    }
-  }
-
-  return [...openspecFiles, ...legacyIncluded]
+  return specFiles
 }
 
 // ---------------------------------------------------------------------------
@@ -254,7 +184,7 @@ async function main() {
     // Explicit file paths provided — skip discovery, process as-is
     specFiles = args.map((f) => resolve(f))
   } else {
-    // Auto-discover: OpenSpec paths first, legacy specs as fallback
+    // Auto-discover all specs under openspec/changes/
     specFiles = await discoverSpecFiles()
   }
 

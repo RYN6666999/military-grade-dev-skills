@@ -62,14 +62,19 @@ Do not implement Phase N+1 content inside Phase N.
 apps/web/          Next.js 16 App Router application
 packages/ui/       Shared React components (@vibe/ui)
 packages/contracts/ Zod runtime schemas (@vibe/contracts)
-packages/machines/ XState state machines — Phase 7+ (@vibe/machines)
-packages/config/   Shared tooling config — Phase 6+ (@vibe/config)
+packages/machines/ XState state machines — Phase 7+ placeholder, currently empty (@vibe/machines)
+packages/config/   Shared tooling config — Phase 6+ placeholder, currently empty (@vibe/config)
 openspec/          Spec-first change management
 scripts/           Build and guard automation
 specs/             Legacy spec location — deprecated, migrate to openspec/
 .cursor/rules/     AI behavioral guardrails
 .github/workflows/ CI guard pipeline
 ```
+
+> **Note on empty packages**: `@vibe/machines` and `@vibe/config` are deliberate
+> Phase 6+/7+ placeholders. They exist in the monorepo now so Turborepo task
+> graphs are pre-wired. Having no source files is intentional and expected
+> at Phase 5. Do not add code to them until the corresponding phase is active.
 
 ### Key Technical Constraints
 
@@ -137,6 +142,7 @@ Every feature, fix, or refactor starts with a change proposal. No spec, no code.
 ```
 /opsx:propose "<idea>"
 → Edit proposal.md, design.md, specs/
+→ npm run guard:specs            (validate spec format before generating)
 → npm run gen:contracts          (if contract changes are involved)
 → npm run guard:contracts        (verify contract integrity)
 → Implementation
@@ -180,7 +186,8 @@ npm run guard:contracts          # Semantic smoke: valid parse / invalid fail
 ## Guard Workflow
 
 ```bash
-npm run guard:all       # types + lint + contracts + ppr (local, fast)
+npm run guard:all       # specs + types + lint + contracts + ppr (local, fast)
+npm run guard:specs     # Spec frontmatter + section structure + JSON validity
 npm run guard:types     # TypeScript strict across all workspaces
 npm run guard:lint      # ESLint baseline
 npm run guard:contracts # Contract semantic smoke
