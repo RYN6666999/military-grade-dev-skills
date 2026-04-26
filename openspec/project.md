@@ -22,18 +22,18 @@ The goal is not to ship features. The goal is to establish a foundation where:
 
 ## Core Philosophy
 
-These seven principles are non-negotiable. They are enforced at the rules layer
-(`.cursor/rules/`), the guard layer (`guard:all`), and the spec layer (OpenSpec).
+These seven principles are non-negotiable. They are enforced at the skills layer
+(`.skills/`), the guard layer (`guard:all`), and the spec layer (OpenSpec).
 
 | # | Principle | Enforcement |
 |---|---|---|
-| 1 | No spec, no code | `spec-first.mdc`, `/opsx:propose` |
-| 2 | All I/O boundaries must have runtime contracts | `contract-required.mdc`, `guard:contracts` |
-| 3 | The AI that writes is not the AI that reviews | `ai-change-scope.mdc` |
-| 4 | Any section crash must not take down the full page | `error-boundary.mdc`, `FaultIsolatedSection` |
-| 5 | Every AI output must be traceable | `ai-change-scope.mdc`, OpenSpec change lifecycle |
+| 1 | No spec, no code | `.skills/vibe-spec-first/SKILL.md`, `/opsx:propose` |
+| 2 | All I/O boundaries must have runtime contracts | `.skills/vibe-contracts/SKILL.md`, `guard:contracts` |
+| 3 | The AI that writes is not the AI that reviews | `.skills/vibe-scope-control/SKILL.md` |
+| 4 | Any section crash must not take down the full page | `.skills/vibe-fault-isolation/SKILL.md`, `FaultIsolatedSection` |
+| 5 | Every AI output must be traceable | `.skills/vibe-scope-control/SKILL.md`, OpenSpec change lifecycle |
 | 6 | Quality checks must be automatable | `guard:all`, `.github/workflows/guard.yml` |
-| 7 | More than 3 related useState → state machine | `state-management.mdc` |
+| 7 | More than 3 related useState → state machine | `.skills/vibe-state-management/SKILL.md` |
 
 ---
 
@@ -47,7 +47,7 @@ Do not implement Phase N+1 content inside Phase N.
 | Phase | Name | Core Deliverable |
 |---|---|---|
 | 0 | Skeleton | Turborepo, Next.js 16, TypeScript strict, Tailwind v4 |
-| 1 | AI Rules | `.cursor/rules/` — 6 enforceable `.mdc` guardrails |
+| 1 | AI Rules | `.skills/` — 9 agent-agnostic SKILL.md guardrails, `.cursor/rules/vibe-skills-bridge.mdc` |
 | 2 | UI Core | `DynamicSection`, `FaultIsolatedSection`, `DefaultSkeleton` |
 | 3 | Contracts | `@vibe/contracts`, Zod schemas, `gen:contracts`, `guard:contracts` |
 | 4 | CI Guards | `guard:all`, GitHub Actions, `guard:ppr` |
@@ -66,8 +66,8 @@ packages/machines/ XState state machines — Phase 7+ placeholder, currently emp
 packages/config/   Shared tooling config — Phase 6+ placeholder, currently empty (@vibe/config)
 openspec/          Spec-first change management
 scripts/           Build and guard automation
-specs/             Legacy spec location — deprecated, migrate to openspec/
-.cursor/rules/     AI behavioral guardrails
+.skills/           Agent-agnostic behavioral guardrails (SKILL.md format)
+.cursor/rules/     Cursor adapter — single bridge file pointing to .skills/
 .github/workflows/ CI guard pipeline
 ```
 

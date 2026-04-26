@@ -40,6 +40,8 @@ Default deployment target: **Vercel**
 | 7 | AI Audit Log Baseline | ✅ Done |
 | 8 | Production Pipeline | ✅ Done |
 
+> Phases above indicate **template infrastructure readiness**. The active development phase for projects built from this template is tracked in `openspec/project.md`.
+
 ---
 
 ## Quick Start ｜ 快速開始
@@ -63,7 +65,7 @@ npm run build            # Production build
 **Guards ｜ 品質檢查**
 
 ```bash
-npm run guard:all        # Run all guards (types + lint + contracts + ppr)
+npm run guard:all        # Run all guards (specs + types + lint + contracts + ppr)
 npm run guard:types      # TypeScript strict check
 npm run guard:lint       # ESLint check
 npm run guard:contracts  # Contract schema verification
