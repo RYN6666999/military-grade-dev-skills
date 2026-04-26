@@ -128,14 +128,14 @@ These are enforced at the guard and rules layers. Violations will be caught.
 
 | Forbidden | Reason | Enforcer |
 |---|---|---|
-| Skip spec, write code directly | Breaks traceability | `spec-first.mdc`, `guard:specs` |
+| Skip spec, write code directly | Breaks traceability | `.skills/vibe-spec-first/`, `guard:specs` |
 | Hand-edit `*.contract.ts` | Contract is generated; edits will be overwritten | Convention |
-| Use TypeScript `as` for I/O casting | Bypasses runtime validation | `contract-required.mdc` |
+| Use TypeScript `as` for I/O casting | Bypasses runtime validation | `.skills/vibe-contracts/` |
 | Use `any` type | Defeats strict mode | `tsconfig.json`, `guard:types` |
-| Add `'use client'` without need | Breaks Server Component optimization | `error-boundary.mdc` |
-| Implement Phase 6+ content without approval | Out-of-scope for current phase | `ai-change-scope.mdc` |
+| Add `'use client'` without need | Breaks Server Component optimization | `.skills/vibe-fault-isolation/` |
+| Implement Phase 6+ content without approval | Out-of-scope for current phase | `.skills/vibe-scope-control/` |
 | Suppress a failing guard with `|| true` or similar | Hides real failures | Code review |
-| Use parallel booleans for mutually exclusive states | Use discriminated unions instead | `state-management.mdc` |
+| Use parallel booleans for mutually exclusive states | Use discriminated unions instead | `.skills/vibe-state-management/` |
 
 ---
 
