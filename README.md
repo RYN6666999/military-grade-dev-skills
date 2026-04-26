@@ -40,7 +40,7 @@ Default deployment target: **Vercel**
 | 7 | AI Audit Log Baseline | ✅ Done |
 | 8 | Production Pipeline | ✅ Done |
 
-> Phases above indicate **template infrastructure readiness**. The active development phase for projects built from this template is tracked in `openspec/project.md`.
+> Phases above track **template infrastructure readiness**. The active development phase for projects built from this template is defined in `openspec/project.md`.
 
 ---
 
@@ -66,6 +66,7 @@ npm run build            # Production build
 
 ```bash
 npm run guard:all        # Run all guards (specs + types + lint + contracts + ppr)
+npm run guard:specs      # Spec format validation
 npm run guard:types      # TypeScript strict check
 npm run guard:lint       # ESLint check
 npm run guard:contracts  # Contract schema verification
@@ -145,7 +146,8 @@ packages/
 scripts/              → Guard, generator, audit, and deploy scripts
 templates/            → Handlebars page templates (static, dynamic, ppr)
 openspec/             → OpenSpec design documentation
-.cursor/rules/        → AI coding rules baseline
+.skills/              → Agent Skills (source of truth for all AI rules)
+.cursor/rules/        → Cursor adapter (single bridge file pointing to .skills/)
 .ai-audit/            → AI audit log (runtime artifact, not committed)
 .github/workflows/    → CI guard + deploy workflows
 ```

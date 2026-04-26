@@ -147,7 +147,6 @@ packages/contracts/              Generated contracts (never edit manually)
 apps/web/app/(dashboard)/        Generated pages land here
 scripts/                         All guard and generator commands
 .cursor/rules/                   AI behavioral guardrails (read-only)
-specs/                           DEPRECATED — legacy spec location, do not use
 ```
 
 ---

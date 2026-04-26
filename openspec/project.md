@@ -47,7 +47,7 @@ Do not implement Phase N+1 content inside Phase N.
 | Phase | Name | Core Deliverable |
 |---|---|---|
 | 0 | Skeleton | Turborepo, Next.js 16, TypeScript strict, Tailwind v4 |
-| 1 | AI Rules | `.skills/` — 9 agent-agnostic SKILL.md guardrails, `.cursor/rules/vibe-skills-bridge.mdc` |
+| 1 | AI Rules | `.skills/` — 13 agent skills (behavioral rules + workflows) |
 | 2 | UI Core | `DynamicSection`, `FaultIsolatedSection`, `DefaultSkeleton` |
 | 3 | Contracts | `@vibe/contracts`, Zod schemas, `gen:contracts`, `guard:contracts` |
 | 4 | CI Guards | `guard:all`, GitHub Actions, `guard:ppr` |
